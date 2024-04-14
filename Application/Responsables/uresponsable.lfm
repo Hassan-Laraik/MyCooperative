@@ -1,0 +1,262 @@
+object FrmResponsable: TFrmResponsable
+  Left = 315
+  Height = 462
+  Top = 158
+  Width = 920
+  BorderStyle = bsDialog
+  Caption = 'FrmResponsable'
+  ClientHeight = 462
+  ClientWidth = 920
+  DesignTimePPI = 81
+  OnShow = FormShow
+  Position = poDesktopCenter
+  LCLVersion = '3.0.0.1'
+  object Panel2: TPanel
+    Left = 0
+    Height = 42
+    Top = 420
+    Width = 920
+    Align = alBottom
+    BevelOuter = bvNone
+    Caption = 'Panel2'
+    ClientHeight = 42
+    ClientWidth = 920
+    TabOrder = 0
+    object BtnFremer: TButton
+      Left = 796
+      Height = 42
+      Top = 0
+      Width = 124
+      Align = alRight
+      Caption = 'BtnFremer'
+      OnClick = BtnFremerClick
+      TabOrder = 0
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 420
+    Top = 0
+    Width = 920
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'TabSheet1'
+      ClientHeight = 390
+      ClientWidth = 910
+      object Panel1: TPanel
+        Left = 0
+        Height = 42
+        Top = 0
+        Width = 910
+        Align = alTop
+        BevelOuter = bvNone
+        Caption = 'Panel1'
+        ClientHeight = 42
+        ClientWidth = 910
+        TabOrder = 0
+        object BtbRechercher: TButton
+          Left = 470
+          Height = 42
+          Top = 0
+          Width = 110
+          Align = alRight
+          Caption = 'BtbRechercher'
+          OnClick = BtbRechercherClick
+          TabOrder = 0
+        end
+        object BtnAjouter: TButton
+          Left = 580
+          Height = 42
+          Top = 0
+          Width = 110
+          Align = alRight
+          Caption = 'BtnAjouter'
+          OnClick = BtnAjouterClick
+          TabOrder = 1
+        end
+        object BtnModifier: TButton
+          Left = 690
+          Height = 42
+          Top = 0
+          Width = 110
+          Align = alRight
+          Caption = 'BtnModifier'
+          OnClick = BtnModifierClick
+          TabOrder = 2
+        end
+        object BtnSupprimer: TButton
+          Left = 800
+          Height = 42
+          Top = 0
+          Width = 110
+          Align = alRight
+          Caption = 'BtnSupprimer'
+          TabOrder = 3
+        end
+        object EdtRechercher: TEdit
+          Left = 0
+          Height = 42
+          Top = 0
+          Width = 470
+          Align = alClient
+          Alignment = taCenter
+          TabOrder = 4
+        end
+      end
+      object DBGrid1: TDBGrid
+        Left = 0
+        Height = 306
+        Top = 42
+        Width = 910
+        Align = alClient
+        AutoFillColumns = True
+        Color = clWindow
+        Columns = <>
+        DataSource = DM.DSResponsables
+        Flat = True
+        ReadOnly = True
+        Scrollbars = ssNone
+        TabOrder = 1
+      end
+      object Panel5: TPanel
+        Left = 0
+        Height = 42
+        Top = 348
+        Width = 910
+        Align = alBottom
+        Caption = 'Panel5'
+        ClientHeight = 42
+        ClientWidth = 910
+        TabOrder = 2
+        object BtnImprimerAllResponsables: TButton
+          Left = 1
+          Height = 40
+          Top = 1
+          Width = 232
+          Align = alLeft
+          Caption = 'BtnImprimerAllResponsables'
+          TabOrder = 0
+        end
+        object BtnImprimerResponsable: TButton
+          Left = 233
+          Height = 40
+          Top = 1
+          Width = 232
+          Align = alLeft
+          Caption = 'BtnImprimerResponsable'
+          TabOrder = 1
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'TabSheet2'
+      ClientHeight = 390
+      ClientWidth = 910
+      object Panel3: TPanel
+        Left = 0
+        Height = 42
+        Top = 348
+        Width = 910
+        Align = alBottom
+        Caption = 'Panel3'
+        ClientHeight = 42
+        ClientWidth = 910
+        TabOrder = 0
+        object BtnAnnuler: TButton
+          Left = 799
+          Height = 40
+          Top = 1
+          Width = 110
+          Align = alRight
+          Caption = 'BtnAnnuler'
+          OnClick = BtnAnnulerClick
+          TabOrder = 0
+        end
+        object BtnValider: TButton
+          Left = 689
+          Height = 40
+          Top = 1
+          Width = 110
+          Align = alRight
+          Caption = 'BtnValider'
+          OnClick = BtnValiderClick
+          TabOrder = 1
+        end
+      end
+      object EdtCin: TEdit
+        Left = 152
+        Height = 33
+        Top = 40
+        Width = 140
+        CharCase = ecUppercase
+        MaxLength = 15
+        TabOrder = 1
+      end
+      object EdtNom: TEdit
+        Left = 152
+        Height = 33
+        Top = 80
+        Width = 254
+        CharCase = ecUppercase
+        MaxLength = 45
+        TabOrder = 2
+      end
+      object EdtGSM: TEdit
+        Left = 152
+        Height = 33
+        Top = 128
+        Width = 140
+        MaxLength = 10
+        NumbersOnly = True
+        TabOrder = 3
+      end
+      object Label1: TLabel
+        Left = 56
+        Height = 16
+        Top = 48
+        Width = 33
+        Caption = 'CIN : '
+      end
+      object Label2: TLabel
+        Left = 56
+        Height = 16
+        Top = 88
+        Width = 97
+        Caption = 'Nom Complet : '
+      end
+      object Label3: TLabel
+        Left = 56
+        Height = 16
+        Top = 136
+        Width = 56
+        Caption = 'N° GSM : '
+      end
+      object Label4: TLabel
+        Left = 56
+        Height = 16
+        Top = 184
+        Width = 50
+        Caption = 'Adresse'
+      end
+      object EdtAdresse: TMemo
+        Left = 152
+        Height = 120
+        Top = 176
+        Width = 383
+        MaxLength = 255
+        TabOrder = 4
+      end
+      object Button1: TButton
+        Left = 597
+        Height = 21
+        Top = 31
+        Width = 63
+        Caption = 'Button1'
+        TabOrder = 5
+      end
+    end
+  end
+end

@@ -1,0 +1,197 @@
+object FrmTarifs: TFrmTarifs
+  Left = 341
+  Height = 411
+  Top = 201
+  Width = 779
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'FrmTarifs'
+  ClientHeight = 411
+  ClientWidth = 779
+  DesignTimePPI = 81
+  Position = poDesktopCenter
+  LCLVersion = '3.0.0.1'
+  object Panel1: TPanel
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 779
+    Align = alTop
+    Caption = 'Panel1'
+    TabOrder = 0
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 42
+    Top = 369
+    Width = 779
+    Align = alBottom
+    Caption = 'Panel2'
+    ClientHeight = 42
+    ClientWidth = 779
+    TabOrder = 1
+    object BtnValider: TButton
+      Left = 676
+      Height = 40
+      Top = 1
+      Width = 102
+      Align = alRight
+      Caption = 'BtnValider'
+      OnClick = BtnValiderClick
+      TabOrder = 0
+    end
+    object BtnSupprimer: TButton
+      Left = 574
+      Height = 40
+      Top = 1
+      Width = 102
+      Align = alRight
+      Caption = 'BtnSupprimer'
+      TabOrder = 1
+    end
+    object BtnModifier: TButton
+      Left = 472
+      Height = 40
+      Top = 1
+      Width = 102
+      Align = alRight
+      Caption = 'BtnModifier'
+      TabOrder = 2
+    end
+    object BtnAjouter: TButton
+      Left = 370
+      Height = 40
+      Top = 1
+      Width = 102
+      Align = alRight
+      Caption = 'BtnAjouter'
+      OnClick = BtnAjouterClick
+      TabOrder = 3
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Height = 287
+    Top = 82
+    Width = 779
+    Align = alClient
+    AutoFillColumns = True
+    Color = clWindow
+    Columns = <    
+      item
+        Title.Caption = 'idtarifs'
+        Width = 151
+        FieldName = 'idtarifs'
+      end    
+      item
+        Title.Caption = 'prix'
+        Width = 151
+        FieldName = 'prix'
+      end    
+      item
+        Title.Caption = 'debut_applique'
+        Width = 151
+        FieldName = 'debut_applique'
+      end    
+      item
+        Title.Caption = 'fin_applique'
+        Width = 151
+        FieldName = 'fin_applique'
+      end    
+      item
+        Title.Caption = 'active'
+        Width = 150
+        FieldName = 'active'
+      end>
+    DataSource = DM.DSTarifApplique
+    TabOrder = 2
+  end
+  object Panel4: TPanel
+    Left = 0
+    Height = 40
+    Top = 42
+    Width = 779
+    Align = alTop
+    Caption = 'Panel4'
+    ClientHeight = 40
+    ClientWidth = 779
+    TabOrder = 3
+    object DBEdit4: TDBEdit
+      Left = 384
+      Height = 38
+      Top = 1
+      Width = 192
+      DataField = 'prix'
+      DataSource = DM.DSTarifApplique
+      Align = alLeft
+      Alignment = taRightJustify
+      MaxLength = 0
+      TabOrder = 0
+    end
+    object DBEdit5: TDBCheckBox
+      Left = 576
+      Height = 38
+      Top = 1
+      Width = 192
+      Align = alClient
+      BorderSpacing.Right = 10
+      DataField = 'active'
+      DataSource = DM.DSTarifApplique
+      TabOrder = 1
+      ValueChecked = '1'
+      ValueUnchecked = '0'
+    end
+    object DBEdit2: TDBDateTimePicker
+      Left = 9
+      Height = 38
+      Top = 1
+      Width = 191
+      DataField = 'debut_applique'
+      DataSource = DM.DSTarifApplique
+      ReadOnly = False
+      CenturyFrom = 1941
+      MaxDate = 2958465
+      MinDate = -53780
+      AutoSize = False
+      TabOrder = 2
+      BorderSpacing.Left = 8
+      TrailingSeparator = False
+      TextForNullDate = 'NULL'
+      LeadingZeros = True
+      Align = alLeft
+      Kind = dtkDate
+      TimeFormat = tf24
+      TimeDisplay = tdHMS
+      DateMode = dmComboBox
+      UseDefaultSeparators = True
+      HideDateTimeParts = []
+      MonthNames = 'Long'
+      OnChange = DBEdit2Change
+    end
+    object DBEdit3: TDBDateTimePicker
+      Left = 200
+      Height = 38
+      Top = 1
+      Width = 184
+      DataField = 'fin_applique'
+      DataSource = DM.DSTarifApplique
+      ReadOnly = False
+      CenturyFrom = 1941
+      MaxDate = 2958465
+      MinDate = -53780
+      AutoSize = False
+      TabOrder = 3
+      TrailingSeparator = False
+      TextForNullDate = 'NULL'
+      LeadingZeros = True
+      Align = alLeft
+      Kind = dtkDate
+      TimeFormat = tf24
+      TimeDisplay = tdHMS
+      DateMode = dmComboBox
+      UseDefaultSeparators = True
+      HideDateTimeParts = []
+      MonthNames = 'Long'
+    end
+  end
+end

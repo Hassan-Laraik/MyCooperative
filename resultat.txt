@@ -1,0 +1,2279 @@
+diff --git a/.gitignore b/.gitignore
+index 02d43d0..7bdc227 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,11 +1,8 @@
+ /Application/backup/
+ /backup/
+-backup
+ /Application/lib/
+-/Application/coperatice2024.exe
++/Application/cooperative2024
+ /Application/Adherents/backup/
+-/Application/Responsables/backup/
+-/Application/Cotisations/backup/
+ /Application/Principale/backup/
+ /Application/DM/backup/
+ 
+diff --git a/Application/Adherents/uadherents.lfm b/Application/Adherents/uadherents.lfm
+index 3da7b47..569c019 100644
+--- a/Application/Adherents/uadherents.lfm
++++ b/Application/Adherents/uadherents.lfm
+@@ -1,7 +1,7 @@
+ object FrmAdherent: TFrmAdherent
+-  Left = 273
++  Left = 274
+   Height = 418
+-  Top = 166
++  Top = 167
+   Width = 809
+   BorderStyle = bsDialog
+   Caption = 'FrmAdherent'
+@@ -18,28 +18,16 @@ object FrmAdherent: TFrmAdherent
+     Width = 809
+     Align = alBottom
+     Caption = 'Panel2'
+-    ClientHeight = 42
+-    ClientWidth = 809
+     TabOrder = 0
+-    object BtnFremer: TButton
+-      Left = 684
+-      Height = 40
+-      Top = 1
+-      Width = 124
+-      Align = alRight
+-      Caption = 'BtnFremer'
+-      OnClick = BtnFremerClick
+-      TabOrder = 0
+-    end
+   end
+   object PageControl1: TPageControl
+     Left = 0
+     Height = 376
+     Top = 0
+     Width = 809
+-    ActivePage = TabSheet1
++    ActivePage = TabSheet2
+     Align = alClient
+-    TabIndex = 0
++    TabIndex = 1
+     TabOrder = 1
+     object TabSheet1: TTabSheet
+       Caption = 'TabSheet1'
+@@ -65,7 +53,7 @@ object FrmAdherent: TFrmAdherent
+           TabOrder = 0
+         end
+         object BtbRechercher: TButton
+-          Left = 358
++          Left = 688
+           Height = 40
+           Top = 1
+           Width = 110
+@@ -75,7 +63,7 @@ object FrmAdherent: TFrmAdherent
+           TabOrder = 1
+         end
+         object BtnAjouter: TButton
+-          Left = 468
++          Left = 358
+           Height = 40
+           Top = 1
+           Width = 110
+@@ -85,7 +73,7 @@ object FrmAdherent: TFrmAdherent
+           TabOrder = 2
+         end
+         object BtnModifier: TButton
+-          Left = 578
++          Left = 468
+           Height = 40
+           Top = 1
+           Width = 110
+@@ -95,7 +83,7 @@ object FrmAdherent: TFrmAdherent
+           TabOrder = 3
+         end
+         object BtnSupprimer: TButton
+-          Left = 688
++          Left = 578
+           Height = 40
+           Top = 1
+           Width = 110
+@@ -106,7 +94,7 @@ object FrmAdherent: TFrmAdherent
+       end
+       object DBGrid1: TDBGrid
+         Left = 0
+-        Height = 262
++        Height = 304
+         Top = 42
+         Width = 799
+         Align = alClient
+@@ -116,35 +104,6 @@ object FrmAdherent: TFrmAdherent
+         DataSource = DM.DsAdherents
+         TabOrder = 1
+       end
+-      object Panel5: TPanel
+-        Left = 0
+-        Height = 42
+-        Top = 304
+-        Width = 799
+-        Align = alBottom
+-        Caption = 'Panel5'
+-        ClientHeight = 42
+-        ClientWidth = 799
+-        TabOrder = 2
+-        object BtnImprimerAllAdherents: TButton
+-          Left = 1
+-          Height = 40
+-          Top = 1
+-          Width = 232
+-          Align = alLeft
+-          Caption = 'BtnImprimerAllAdherents'
+-          TabOrder = 0
+-        end
+-        object BtnImprimerAdherents1: TButton
+-          Left = 233
+-          Height = 40
+-          Top = 1
+-          Width = 232
+-          Align = alLeft
+-          Caption = 'BtnImprimerAdherents1'
+-          TabOrder = 1
+-        end
+-      end
+     end
+     object TabSheet2: TTabSheet
+       Caption = 'TabSheet2'
+diff --git a/Application/Adherents/uadherents.pas b/Application/Adherents/uadherents.pas
+index fd6953f..6b7dc4e 100644
+--- a/Application/Adherents/uadherents.pas
++++ b/Application/Adherents/uadherents.pas
+@@ -15,9 +15,6 @@ type
+   TFrmAdherent = class(TForm)
+     BtbRechercher: TButton;
+     BtnAjouter: TButton;
+-    BtnFremer: TButton;
+-    BtnImprimerAllAdherents: TButton;
+-    BtnImprimerAdherents1: TButton;
+     BtnModifier: TButton;
+     BtnSupprimer: TButton;
+     BtnAnnuler: TButton;
+@@ -37,23 +34,21 @@ type
+     Panel1: TPanel;
+     Panel2: TPanel;
+     Panel3: TPanel;
+-    Panel5: TPanel;
+     TabSheet1: TTabSheet;
+     TabSheet2: TTabSheet;
+     procedure BtbRechercherClick(Sender: TObject);
+     procedure BtnAjouterClick(Sender: TObject);
+     procedure BtnAnnulerClick(Sender: TObject);
+-    procedure BtnFremerClick(Sender: TObject);
+     procedure BtnModifierClick(Sender: TObject);
+     procedure BtnValiderClick(Sender: TObject);
+ 
+     procedure FormShow(Sender: TObject);
+ 
+   private
+-     CDUD : string;
+-     Function ValiderAdherent(): Boolean;
+-     procedure ViderAdherent();
+-     Procedure ChargerAdherent();
++      CDUD : string;
++      Function ValiderAdherent(): Boolean;
++      procedure ViderAdherent();
++      Procedure ChargerAdherent();
+   public
+ 
+   end;
+@@ -75,62 +70,61 @@ end;
+ 
+ procedure TFrmAdherent.BtnAjouterClick(Sender: TObject);
+ begin
+-  Self.CDUD := 'INSERT';
++  Self.CDUD:='INSERT';
+   self.ViderAdherent();
+-  PageControl1.ActivePage := TabSheet2;
++  PageControl1.ActivePage:=TabSheet2;
+   EdtCin.SetFocus;
+ end;
+ 
+ procedure TFrmAdherent.BtnAnnulerClick(Sender: TObject);
+ begin
+   //if DM.AnnulerAdherent() then
+-  PageControl1.ActivePage := TabSheet1;
+-end;
+-
+-procedure TFrmAdherent.BtnFremerClick(Sender: TObject);
+-begin
+-  DM.DisactiverTable('Adherents');
+-  close;
++  PageControl1.ActivePage:=TabSheet1;
+ end;
+ 
+ procedure TFrmAdherent.BtnModifierClick(Sender: TObject);
+ begin
+-   Self.CDUD := 'UPDATE';
+-   PageControl1.ActivePage := TabSheet2;
++  Self.CDUD:='UPDATE';
++   PageControl1.ActivePage:=TabSheet2;
+    self.ChargerAdherent();
+ end;
+ 
+ procedure TFrmAdherent.BtnValiderClick(Sender: TObject);
+ begin
+-  if  Not self.ValiderAdherent() then
+-  begin
+-    exit;
+-  end;
++      if  Not  self.ValiderAdherent() then
++       begin
++         exit;
++       end;
+   case self.CDUD of
+     'INSERT': if NOT DM.AjouterAdherent(EdtCin.Text,EdtNom.Text,EdtGSM.Text,EdtAdresse.text)
+-                then
+-                begin
+-                ShowMessage('Operration Non Effectuée  CIN Adherent Existe Deja!');
+-                exit;
+-                end;
++   then
++    begin
++      ShowMessage('Operration Non Effectuée  CIN Adherent Existe Deja!');
++      exit;
++    end;
+     'UPDATE':if NOT DM.ModifierAdherent(EdtCin.Text,EdtNom.Text,EdtGSM.Text,EdtAdresse.text)
+-               then
+-                begin
+-                  ShowMessage('Operration Non Effectuée  CIN Adherent Existe Deja! !');
+-                  exit;
+-                end;
++   then
++    begin
++      ShowMessage('Operration Non Effectuée  CIN Adherent Existe Deja! !');
++      exit;
++    end;
+   end;
+-  PageControl1.ActivePage := TabSheet1;
++
++  PageControl1.ActivePage:=TabSheet1;
+ end;
+ 
++
++
+ procedure TFrmAdherent.FormShow(Sender: TObject);
+ begin
+   PageControl1.ActivePage := TabSheet1;
+ end;
+ 
++
++
+ function TFrmAdherent.ValiderAdherent(): Boolean;
+ begin
+-   Result := False;
++  Result := False;
+     if Length(trim(EdtCin.text)) < 1 then
+      begin
+        ShowMessage('Code Adherent Non Conforme !');
+@@ -162,10 +156,10 @@ end;
+ 
+ procedure TFrmAdherent.ChargerAdherent();
+ begin
+-     EdtCin.Text := DM.ValeurDuChampAdherent('cin_adherent');
+-     EdtNom.Text := DM.ValeurDuChampAdherent('nom');
+-     EdtGSM.Text := DM.ValeurDuChampAdherent('gsm');
+-     EdtAdresse.Text := DM.ValeurDuChampAdherent('douar');
++     EdtCin.Text:=DM.ValeurDuChamp('cin_adherent');
++     EdtNom.Text:=DM.ValeurDuChamp('nom');
++     EdtGSM.Text:=DM.ValeurDuChamp('gsm');
++     EdtAdresse.Text:=DM.ValeurDuChamp('douar');
+ end;
+ 
+ end.
+diff --git a/Application/Cotisations/ucotisation1.lfm b/Application/Cotisations/ucotisation1.lfm
+deleted file mode 100644
+index 6a0c551..0000000
+--- a/Application/Cotisations/ucotisation1.lfm
++++ /dev/null
+@@ -1,424 +0,0 @@
+-object FrmCotisation: TFrmCotisation
+-  Left = 238
+-  Height = 477
+-  Top = 165
+-  Width = 989
+-  BorderStyle = bsDialog
+-  Caption = 'FrmCotisation'
+-  ClientHeight = 477
+-  ClientWidth = 989
+-  DesignTimePPI = 81
+-  OnShow = FormShow
+-  Position = poDesktopCenter
+-  LCLVersion = '3.0.0.1'
+-  object PageControl1: TPageControl
+-    Left = 0
+-    Height = 435
+-    Top = 0
+-    Width = 989
+-    ActivePage = TabSheet1
+-    Align = alClient
+-    TabIndex = 0
+-    TabOrder = 0
+-    object TabSheet1: TTabSheet
+-      Caption = 'TabSheet1'
+-      ClientHeight = 405
+-      ClientWidth = 979
+-      object Panel4: TPanel
+-        Left = 0
+-        Height = 42
+-        Top = 0
+-        Width = 979
+-        Align = alTop
+-        Caption = 'Panel4'
+-        ClientHeight = 42
+-        ClientWidth = 979
+-        TabOrder = 0
+-        object EdtRechercherAdherent: TEdit
+-          Left = 1
+-          Height = 40
+-          Top = 1
+-          Width = 629
+-          Align = alClient
+-          Alignment = taCenter
+-          BorderStyle = bsNone
+-          TabOrder = 0
+-        end
+-        object BtnRechercherAdherent: TButton
+-          Left = 630
+-          Height = 40
+-          Top = 1
+-          Width = 186
+-          Align = alRight
+-          Caption = 'BtnRechercherAdherent'
+-          OnClick = BtnRechercherAdherentClick
+-          TabOrder = 1
+-        end
+-        object BtnCotisation: TButton
+-          Left = 816
+-          Height = 40
+-          Top = 1
+-          Width = 162
+-          Align = alRight
+-          Caption = 'BtnCotisation'
+-          OnClick = BtnCotisationClick
+-          TabOrder = 2
+-        end
+-      end
+-      object DBGrid2: TDBGrid
+-        Left = 0
+-        Height = 363
+-        Top = 42
+-        Width = 979
+-        Align = alClient
+-        AutoFillColumns = True
+-        Color = clWindow
+-        Columns = <>
+-        DataSource = DM.DsAdherents
+-        TabOrder = 1
+-      end
+-    end
+-    object TabSheet2: TTabSheet
+-      Caption = 'TabSheet2'
+-      ClientHeight = 405
+-      ClientWidth = 979
+-      object Panel1: TPanel
+-        Left = 0
+-        Height = 42
+-        Top = 0
+-        Width = 979
+-        Align = alTop
+-        Caption = 'Panel1'
+-        ClientHeight = 42
+-        ClientWidth = 979
+-        TabOrder = 0
+-        object BtbRechercher: TButton
+-          Left = 538
+-          Height = 40
+-          Top = 1
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtbRechercher'
+-          OnClick = BtbRechercherClick
+-          TabOrder = 0
+-        end
+-        object BtnAjouter: TButton
+-          Left = 648
+-          Height = 40
+-          Top = 1
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtnAjouter'
+-          OnClick = BtnAjouterClick
+-          TabOrder = 1
+-        end
+-        object BtnModifier: TButton
+-          Left = 758
+-          Height = 40
+-          Top = 1
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtnModifier'
+-          OnClick = BtnModifierClick
+-          TabOrder = 2
+-        end
+-        object BtnSupprimer: TButton
+-          Left = 868
+-          Height = 40
+-          Top = 1
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtnSupprimer'
+-          TabOrder = 3
+-        end
+-        object EdtRechercher: TDateTimePicker
+-          Left = 1
+-          Height = 40
+-          Top = 1
+-          Width = 537
+-          CenturyFrom = 1941
+-          MaxDate = 2958465
+-          MinDate = -53780
+-          AutoSize = False
+-          TabOrder = 4
+-          TrailingSeparator = False
+-          TextForNullDate = 'NULL'
+-          LeadingZeros = True
+-          Align = alClient
+-          Kind = dtkDate
+-          TimeFormat = tf24
+-          TimeDisplay = tdHMS
+-          DateMode = dmUpDown
+-          Date = 45389
+-          Time = 0.938941909720597
+-          UseDefaultSeparators = True
+-          AutoAdvance = False
+-          HideDateTimeParts = []
+-          MonthNames = 'Long'
+-          Alignment = taCenter
+-        end
+-      end
+-      object DBGrid1: TDBGrid
+-        Left = 0
+-        Height = 321
+-        Top = 42
+-        Width = 979
+-        Align = alClient
+-        AutoFillColumns = True
+-        Color = clWindow
+-        Columns = <>
+-        DataSource = DM.DSCollectes
+-        TabOrder = 1
+-      end
+-      object Panel2: TPanel
+-        Left = 0
+-        Height = 42
+-        Top = 363
+-        Width = 979
+-        Align = alBottom
+-        Caption = 'Panel2'
+-        ClientHeight = 42
+-        ClientWidth = 979
+-        TabOrder = 2
+-        object BtnRetout: TButton
+-          Left = 814
+-          Height = 40
+-          Top = 1
+-          Width = 164
+-          Align = alRight
+-          Caption = 'BtnRetout'
+-          OnClick = BtnRetoutClick
+-          TabOrder = 0
+-        end
+-        object BtnImprimerCotisationAdherent: TButton
+-          Left = 1
+-          Height = 40
+-          Top = 1
+-          Width = 232
+-          Align = alLeft
+-          Caption = 'BtnImprimerCotisationAdherent'
+-          TabOrder = 1
+-        end
+-      end
+-    end
+-    object TabSheet3: TTabSheet
+-      Caption = 'TabSheet3'
+-      ClientHeight = 405
+-      ClientWidth = 979
+-      object GroupBox1: TGroupBox
+-        Left = 0
+-        Height = 363
+-        Top = 0
+-        Width = 512
+-        Align = alLeft
+-        Caption = 'Coordonnées Adhernt : '
+-        ClientHeight = 361
+-        ClientWidth = 510
+-        TabOrder = 0
+-        object Label1: TLabel
+-          Left = 56
+-          Height = 16
+-          Top = 48
+-          Width = 33
+-          Caption = 'CIN : '
+-        end
+-        object EdtCin: TEdit
+-          Left = 152
+-          Height = 33
+-          Top = 40
+-          Width = 140
+-          CharCase = ecUppercase
+-          MaxLength = 15
+-          TabOrder = 0
+-        end
+-        object Label2: TLabel
+-          Left = 56
+-          Height = 16
+-          Top = 88
+-          Width = 97
+-          Caption = 'Nom Complet : '
+-        end
+-        object EdtNom: TEdit
+-          Left = 152
+-          Height = 33
+-          Top = 80
+-          Width = 254
+-          CharCase = ecUppercase
+-          MaxLength = 45
+-          TabOrder = 1
+-        end
+-        object Label3: TLabel
+-          Left = 56
+-          Height = 16
+-          Top = 136
+-          Width = 56
+-          Caption = 'N° GSM : '
+-        end
+-        object EdtGSM: TEdit
+-          Left = 152
+-          Height = 33
+-          Top = 128
+-          Width = 140
+-          MaxLength = 10
+-          NumbersOnly = True
+-          TabOrder = 2
+-        end
+-        object Label4: TLabel
+-          Left = 56
+-          Height = 16
+-          Top = 184
+-          Width = 50
+-          Caption = 'Adresse'
+-        end
+-        object EdtAdresse: TMemo
+-          Left = 152
+-          Height = 120
+-          Top = 176
+-          Width = 334
+-          MaxLength = 255
+-          TabOrder = 3
+-        end
+-        object Button1: TButton
+-          Left = 305
+-          Height = 33
+-          Top = 40
+-          Width = 75
+-          Caption = 'Button1'
+-          TabOrder = 4
+-        end
+-      end
+-      object GroupBox2: TGroupBox
+-        Left = 512
+-        Height = 363
+-        Top = 0
+-        Width = 467
+-        Align = alClient
+-        Caption = 'Cotisation : '
+-        ClientHeight = 361
+-        ClientWidth = 465
+-        TabOrder = 1
+-        object EdtQuantite: TFloatSpinEdit
+-          Left = 224
+-          Height = 33
+-          Top = 96
+-          Width = 160
+-          TabOrder = 0
+-        end
+-        object RadioPeriode: TRadioGroup
+-          Left = 37
+-          Height = 65
+-          Top = 160
+-          Width = 346
+-          AutoFill = True
+-          Caption = 'Periode '
+-          ChildSizing.LeftRightSpacing = 6
+-          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+-          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+-          ChildSizing.ShrinkHorizontal = crsScaleChilds
+-          ChildSizing.ShrinkVertical = crsScaleChilds
+-          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+-          ChildSizing.ControlsPerLine = 2
+-          ClientHeight = 48
+-          ClientWidth = 344
+-          Columns = 2
+-          ItemIndex = 0
+-          Items.Strings = (
+-            'Matain'
+-            'Soire'
+-          )
+-          TabOrder = 1
+-        end
+-        object Label6: TLabel
+-          Left = 32
+-          Height = 16
+-          Top = 48
+-          Width = 98
+-          Caption = 'Date Cotisation'
+-        end
+-        object Label7: TLabel
+-          Left = 37
+-          Height = 16
+-          Top = 112
+-          Width = 109
+-          Caption = 'Quantite en Litre'
+-        end
+-        object EdtDAteCotisation: TDateTimePicker
+-          Left = 224
+-          Height = 31
+-          Top = 42
+-          Width = 160
+-          CenturyFrom = 1941
+-          DateDisplayOrder = ddoDMY
+-          MaxDate = 2958465
+-          MinDate = -53780
+-          AutoSize = False
+-          TabOrder = 2
+-          TrailingSeparator = False
+-          TextForNullDate = 'NULL'
+-          LeadingZeros = True
+-          Kind = dtkDate
+-          TimeFormat = tf24
+-          TimeDisplay = tdHMS
+-          DateMode = dmComboBox
+-          Date = 45386
+-          Time = 0.93032251157274
+-          UseDefaultSeparators = True
+-          HideDateTimeParts = []
+-          MonthNames = 'Long'
+-        end
+-      end
+-      object Panel3: TPanel
+-        Left = 0
+-        Height = 42
+-        Top = 363
+-        Width = 979
+-        Align = alBottom
+-        Caption = 'Panel3'
+-        ClientHeight = 42
+-        ClientWidth = 979
+-        TabOrder = 2
+-        object BtnAnnuler: TButton
+-          Left = 868
+-          Height = 40
+-          Top = 1
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtnAnnuler'
+-          OnClick = BtnAnnulerClick
+-          TabOrder = 0
+-        end
+-        object BtnValider: TButton
+-          Left = 758
+-          Height = 40
+-          Top = 1
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtnValider'
+-          OnClick = BtnValiderClick
+-          TabOrder = 1
+-        end
+-      end
+-    end
+-  end
+-  object Panel6: TPanel
+-    Left = 0
+-    Height = 42
+-    Top = 435
+-    Width = 989
+-    Align = alBottom
+-    Caption = 'Panel6'
+-    ClientHeight = 42
+-    ClientWidth = 989
+-    TabOrder = 1
+-    object BtnFremer: TButton
+-      Left = 864
+-      Height = 40
+-      Top = 1
+-      Width = 124
+-      Align = alRight
+-      Caption = 'BtnFremer'
+-      OnClick = BtnFremerClick
+-      TabOrder = 0
+-    end
+-  end
+-end
+diff --git a/Application/Cotisations/ucotisation1.pas b/Application/Cotisations/ucotisation1.pas
+deleted file mode 100644
+index 387383a..0000000
+--- a/Application/Cotisations/ucotisation1.pas
++++ /dev/null
+@@ -1,203 +0,0 @@
+-unit uCotisation1;
+-
+-{$mode ObjFPC}{$H+}
+-
+-interface
+-
+-uses
+-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
+-  ComCtrls, DBGrids, Calendar, EditBtn, Spin, ExtDlgs, DateTimePicker;
+-
+-type
+-
+-  { TFrmCotisation }
+-
+-  TFrmCotisation = class(TForm)
+-    BtbRechercher: TButton;
+-    BtnAjouter: TButton;
+-    BtnAnnuler: TButton;
+-    BtnImprimerCotisationAdherent: TButton;
+-    BtnModifier: TButton;
+-    BtnSupprimer: TButton;
+-    BtnValider: TButton;
+-    Button1: TButton;
+-    BtnRechercherAdherent: TButton;
+-    BtnCotisation: TButton;
+-    BtnRetout: TButton;
+-    BtnFremer: TButton;
+-    DBGrid1: TDBGrid;
+-    DBGrid2: TDBGrid;
+-    EdtRechercher: TDateTimePicker;
+-    EdtRechercherAdherent: TEdit;
+-    EdtAdresse: TMemo;
+-    EdtCin: TEdit;
+-    EdtDAteCotisation: TDateTimePicker;
+-    EdtGSM: TEdit;
+-    EdtNom: TEdit;
+-    EdtQuantite: TFloatSpinEdit;
+-    GroupBox1: TGroupBox;
+-    GroupBox2: TGroupBox;
+-    Label1: TLabel;
+-    Label2: TLabel;
+-    Label3: TLabel;
+-    Label4: TLabel;
+-    Label6: TLabel;
+-    Label7: TLabel;
+-    PageControl1: TPageControl;
+-    Panel1: TPanel;
+-    Panel2: TPanel;
+-    Panel3: TPanel;
+-    Panel4: TPanel;
+-    Panel6: TPanel;
+-    RadioPeriode: TRadioGroup;
+-    TabSheet1: TTabSheet;
+-    TabSheet2: TTabSheet;
+-    TabSheet3: TTabSheet;
+-    procedure BtbRechercherClick(Sender: TObject);
+-    procedure BtnAjouterClick(Sender: TObject);
+-    procedure BtnAnnulerClick(Sender: TObject);
+-    procedure BtnCotisationClick(Sender: TObject);
+-    procedure BtnFremerClick(Sender: TObject);
+-    procedure BtnModifierClick(Sender: TObject);
+-    procedure BtnRechercherAdherentClick(Sender: TObject);
+-    procedure BtnRetoutClick(Sender: TObject);
+-    procedure BtnValiderClick(Sender: TObject);
+-    procedure FormShow(Sender: TObject);
+-  private
+-    CDUD : string;
+-    Cin_Responsable : string;
+-    procedure ViderCotidation();
+-    procedure ChargerCotisation();
+-  public
+-
+-  end;
+-
+-var
+-  FrmCotisation: TFrmCotisation;
+-
+-implementation
+- uses UDM;
+-{$R *.lfm}
+-
+- { TFrmCotisation }
+-
+- procedure TFrmCotisation.BtnAjouterClick(Sender: TObject);
+- begin
+-   Self.CDUD := 'INSERT';
+-   self.ViderCotidation();
+-   PageControl1.ActivePage := TabSheet3;
+-   EdtCin.SetFocus;
+- end;
+-
+-procedure TFrmCotisation.BtbRechercherClick(Sender: TObject);
+-begin
+-  DM.RechercheCotisation(DBGrid1.Columns.Items[4].Field.AsString,EdtRechercher.Date);
+-end;
+-
+-procedure TFrmCotisation.BtnAnnulerClick(Sender: TObject);
+-begin
+-  PageControl1.ActivePage := TabSheet1;
+-end;
+-
+-procedure TFrmCotisation.BtnCotisationClick(Sender: TObject);
+-begin
+-  DM.FiltrerCotisation(DBGrid2.Columns.Items[0].Field.AsString);
+-  PageControl1.ActivePage := TabSheet2;
+-end;
+-
+-procedure TFrmCotisation.BtnFremerClick(Sender: TObject);
+-begin
+-  DM.DisactiverTable('Cotisation');
+-  close;
+-end;
+-
+-procedure TFrmCotisation.BtnModifierClick(Sender: TObject);
+-begin
+-  Self.CDUD:='UPDATE';
+-  PageControl1.ActivePage := TabSheet3;
+-  self.ChargerCotisation();
+-end;
+-
+-procedure TFrmCotisation.BtnRechercherAdherentClick(Sender: TObject);
+-begin
+-  DM.FiltrerCotisation('') ;
+-  if Not DM.RechercheAdherent(trim(EdtRechercherAdherent.Text)) then
+-         ShowMessage('Adherent Non Trouvé !!') ;
+-end;
+-
+-procedure TFrmCotisation.BtnRetoutClick(Sender: TObject);
+-begin
+-  PageControl1.ActivePage := TabSheet1;
+-end;
+-
+-procedure TFrmCotisation.BtnValiderClick(Sender: TObject);
+-var periode : String;
+-begin
+-  {if  Not  self.ValiderAdherent() then
+-       begin
+-         exit;
+-       end; }
+-   if RadioPeriode.ItemIndex = 0 then periode := 'MATAIN';
+-   if RadioPeriode.ItemIndex = 1 then periode := 'SOIR'; ;
+-  case self.CDUD of
+-    'INSERT': if NOT DM.AjouterCotisation(
+-                                          EdtDAteCotisation.Date,
+-                                          EdtQuantite.Value,
+-                                          EdtCin.Text,
+-                                          Cin_Responsable,
+-                                          periode
+-                                          )
+-                  then
+-                   begin
+-                    ShowMessage('Operration Non Effectuée ');
+-                    exit;
+-                  end;
+-    'UPDATE': if NOT DM.ModifierCotisation(
+-                                          EdtDAteCotisation.Date,
+-                                          EdtQuantite.Value,
+-                                          EdtCin.Text,
+-                                          Cin_Responsable,
+-                                          periode
+-                                          )
+-                    then
+-                     begin
+-                      ShowMessage('Operration Non Effectuée ');
+-                      exit;
+-                    end;
+-  end;
+-  PageControl1.ActivePage := TabSheet2;
+-end;
+-
+-procedure TFrmCotisation.FormShow(Sender: TObject);
+-begin
+-  self.Cin_Responsable := 'RES1';
+-  PageControl1.ActivePage := TabSheet1;
+-end;
+-
+- procedure TFrmCotisation.ViderCotidation();
+- begin
+-     EdtCin.Text:= DM.ValeurDuChampAdherent('cin_adherent');
+-     EdtNom.Text:= DM.ValeurDuChampAdherent('nom');
+-     EdtGSM.Text:= DM.ValeurDuChampAdherent('gsm');
+-     //EdtAdresse.Clear;
+-     EdtDAteCotisation.Date := date();
+-     EdtQuantite.Text := '5';
+-     RadioPeriode.ItemIndex := 0;
+- end;
+-
+- procedure TFrmCotisation.ChargerCotisation();
+- begin
+-     EdtCin.Text := DM.ValeurDuChampAdherent('cin_adherent');
+-     EdtNom.Text := DM.ValeurDuChampAdherent('nom');
+-     EdtGSM.Text := DM.ValeurDuChampAdherent('gsm');
+-
+-     EdtDAteCotisation.Date := StrToDate(DM.ValeurDuChampCotisation('datecotisation'));
+-     EdtQuantite.Text := DM.ValeurDuChampCotisation('quantite');
+-     if DM.ValeurDuChampCotisation('periode') = 'MATAIN' then
+-       RadioPeriode.ItemIndex := 0
+-     else
+-       RadioPeriode.ItemIndex := 1;
+- end;
+-
+-end.
+-
+diff --git a/Application/DM/udm.lfm b/Application/DM/udm.lfm
+index dea813b..7df06a4 100644
+--- a/Application/DM/udm.lfm
++++ b/Application/DM/udm.lfm
+@@ -1,8 +1,8 @@
+ object DM: TDM
+   OldCreateOrder = False
+   Height = 253
+-  HorizontalOffset = 777
+-  VerticalOffset = 152
++  HorizontalOffset = 318
++  VerticalOffset = 154
+   Width = 406
+   PPI = 81
+   object ZCNX: TZConnection
+@@ -12,6 +12,7 @@ object DM: TDM
+       'AutoEncodeStrings=True'
+       'controls_cp=CP_UTF8'
+     )
++    Connected = True
+     HostName = 'localhost'
+     Port = 0
+     Database = 'gestion_litiaire'
+@@ -24,6 +25,7 @@ object DM: TDM
+   object ZTblAdherents: TZTable
+     Connection = ZCNX
+     OnPostError = ZTblAdherentsPostError
++    Active = True
+     TableName = 'adherents'
+     Left = 46
+     Top = 81
+@@ -71,142 +73,17 @@ object DM: TDM
+   end
+   object ZtblResponsables: TZTable
+     Connection = ZCNX
++    Active = True
+     TableName = 'responsables'
+     Left = 162
+     Top = 81
+-    object ZtblResponsablescin_responsable: TStringField
+-      FieldKind = fkData
+-      FieldName = 'cin_responsable'
+-      Index = 0
+-      LookupCache = False
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = True
+-      Size = 10
+-    end
+-    object ZtblResponsablesnom: TStringField
+-      FieldKind = fkData
+-      FieldName = 'nom'
+-      Index = 1
+-      LookupCache = False
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = True
+-      Size = 45
+-    end
+-    object ZtblResponsablesgsm: TStringField
+-      FieldKind = fkData
+-      FieldName = 'gsm'
+-      Index = 2
+-      LookupCache = False
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = False
+-      OnGetText = ZtblResponsablesgsmGetText
+-      Size = 10
+-    end
+-    object ZtblResponsablesdouar: TStringField
+-      FieldKind = fkData
+-      FieldName = 'douar'
+-      Index = 3
+-      LookupCache = False
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = False
+-      Size = 255
+-    end
+   end
+   object ZtblCollectes: TZTable
+     Connection = ZCNX
++    Active = True
+     TableName = 'collectes'
+     Left = 263
+     Top = 81
+-    object ZtblCollectesidcotisations: TLongintField
+-      FieldKind = fkData
+-      FieldName = 'idcotisations'
+-      Index = 0
+-      LookupCache = False
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = True
+-    end
+-    object ZtblCollectesdatecotisation: TDateField
+-      FieldKind = fkData
+-      FieldName = 'datecotisation'
+-      Index = 1
+-      LookupCache = False
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = True
+-    end
+-    object ZtblCollectesquantite: TFloatField
+-      FieldKind = fkData
+-      FieldName = 'quantite'
+-      Index = 2
+-      LookupCache = False
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = True
+-      Precision = 8
+-    end
+-    object ZtblCollectesperiode: TStringField
+-      FieldKind = fkData
+-      FieldName = 'periode'
+-      Index = 3
+-      LookupCache = False
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = False
+-      Size = 6
+-    end
+-    object ZtblCollectescin_adherent: TStringField
+-      FieldKind = fkData
+-      FieldName = 'cin_adherent'
+-      Index = 4
+-      LookupCache = False
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = True
+-      Size = 10
+-    end
+-    object ZtblCollectescin_responsable: TStringField
+-      FieldKind = fkData
+-      FieldName = 'cin_responsable'
+-      Index = 5
+-      LookupCache = False
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = True
+-      Size = 10
+-    end
+-    object TStringField
+-      FieldKind = fkLookup
+-      FieldName = 'nom'
+-      Index = 6
+-      KeyFields = 'cin_adherent'
+-      LookupCache = False
+-      LookupDataSet = ZTblAdherents
+-      LookupKeyFields = 'cin_adherent'
+-      LookupResultField = 'nom'
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = False
+-      Size = 45
+-    end
+-    object TStringField
+-      FieldKind = fkLookup
+-      FieldName = 'gsm'
+-      Index = 7
+-      KeyFields = 'cin_adherent'
+-      LookupCache = False
+-      LookupDataSet = ZTblAdherents
+-      LookupKeyFields = 'cin_adherent'
+-      LookupResultField = 'gsm'
+-      ProviderFlags = [pfInUpdate, pfInWhere]
+-      ReadOnly = False
+-      Required = False
+-      Size = 10
+-    end
+   end
+   object DsAdherents: TDataSource
+     DataSet = ZTblAdherents
+diff --git a/Application/DM/udm.pas b/Application/DM/udm.pas
+index 69abdce..f2ff727 100644
+--- a/Application/DM/udm.pas
++++ b/Application/DM/udm.pas
+@@ -5,7 +5,7 @@ unit uDM;
+ interface
+ 
+ uses
+-  Classes, SysUtils, DB, ZConnection, ZDataset,variants;
++  Classes, SysUtils, DB, ZConnection, ZDataset;
+ 
+ type
+ 
+@@ -21,31 +21,18 @@ type
+     ZTblAdherentsdouar: TStringField;
+     ZTblAdherentsgsm: TStringField;
+     ZTblAdherentsnom: TStringField;
+-    ZtblCollectescin_adherent: TStringField;
+-    ZtblCollectescin_responsable: TStringField;
+-    ZtblCollectesdatecotisation: TDateField;
+-    ZtblCollectesidcotisations: TLongintField;
+-    ZtblCollectesperiode: TStringField;
+-    ZtblCollectesquantite: TFloatField;
+     ZtblResponsables: TZTable;
+     ZtblCollectes: TZTable;
+-    ZtblResponsablescin_responsable: TStringField;
+-    ZtblResponsablesdouar: TStringField;
+-    ZtblResponsablesgsm: TStringField;
+-    ZtblResponsablesnom: TStringField;
+     procedure ZTblAdherentsgsmGetText(Sender: TField; var aText: string;
+       DisplayText: Boolean);
+     procedure ZTblAdherentsPostError(DataSet: TDataSet; E: EDatabaseError;
+       var DataAction: TDataAction);
+-    procedure ZtblResponsablesgsmGetText(Sender: TField; var aText: string;
+-      DisplayText: Boolean);
+   private
+ 
+ 
+   public
+-      Function ActiverTable(_Table : String):Boolean;
+-      Function DisactiverTable(_Table : String):Boolean;
+-      function RechercheAdherent(cin : string): Boolean;
++
++     function RechercheAdherent(cin : string): Boolean;
+       function AjouterAdherent(cin,nom,gsm,douar : string):Boolean;
+       Function ModifierAdherent(cin,nom,gsm,douar : string):Boolean;
+       Function SuprimerAdherent(cin : string) : Boolean;
+@@ -54,20 +41,16 @@ type
+       function AjouterResponsable(cin,nom,gsm,adresse : string):Boolean;
+       Function ModifierResponsable(cin,nom,gsm,adresse : string):Boolean;
+       Function SuprimerResponsable(cin : string) : Boolean;
+-      function RechercheCotisation(cle : string;datecotisation : tdate): Boolean;
+-      Procedure FiltrerCotisation(cle : string);
++      function RechercheCotisation(cle : string): Boolean;
+       function AjouterCotisation(dateCotisation : tdate;quantite : double;
+-                                     cinAdherent,cinResponsable : string;
+-                                     periode : string = 'MATAIN') : Boolean;
++                                 cinAdherent,cinResponsable : string;
++                                 periode : Boolean = False):Boolean;
+       Function ModifierCotisation(dateCotisation : tdate;quantite : double;
+                                   cinAdherent,cinResponsable : string;
+-                                  periode : string = 'MATAIN'): Boolean;
+-      Function SuprimerCotisation(idCotisation : string): Boolean;
+-
+-      function ValeurDuChampAdherent(avalue : string) : string;
+-      function ValeurDuChampReponsable(avalue : string) : string;
+-      function ValeurDuChampCotisation(avalue : string) : string;
++                                  periode : Boolean = False):Boolean;
++      Function SuprimerCotisation(idCotisation : string) : Boolean;
+ 
++      function ValeurDuChamp(avalue : string) : string;
+   end;
+ 
+ var
+@@ -95,54 +78,18 @@ begin
+ 
+ end;
+ 
+-procedure TDM.ZtblResponsablesgsmGetText(Sender: TField; var aText: string;
+-  DisplayText: Boolean);
+-begin
+-   if sender.AsString = '' then aText:='AUCUN'
+-  else aText := sender.AsString;
+-end;
+-
+-function TDM.ActiverTable(_Table: String): Boolean;
+-begin
+-   try
+-    if  _Table = 'Adherents' then ZTblAdherents.Active:=true;
+-    if  _Table = 'Responsables' then ZtblResponsables.Active:=true;
+-    if  _Table = 'Cotisations' then ZtblCollectes.Active:=true;
+-    Result := True;
+-   Except
+-      Result := False;
+-   end;
+-
+-
+-end;
+-
+-function TDM.DisactiverTable(_Table: String): Boolean;
+-begin
+-  try
+-    if  _Table = 'Adherents' then ZTblAdherents.Active:=False;
+-    if  _Table = 'Responsables' then ZtblResponsables.Active:=False;
+-    if  _Table = 'Cotisations' then ZtblCollectes.Active:=False;
+-    Result := True;
+-   Except
+-      Result := False;
+-   end;
+-end;
+-
+ 
+ 
+ procedure TDM.ZTblAdherentsgsmGetText(Sender: TField; var aText: string;
+   DisplayText: Boolean);
+ begin
+-  if sender.AsString = '' then
+-   aText:='AUCUN'
+-  else
+-    aText := sender.AsString;
++  if sender.AsString = '' then aText:='AUCUN'
++  else aText:=sender.AsString;
+ end;
+ 
+ function TDM.RechercheAdherent(cin: string): Boolean;
+ begin
+-   result :=
+-   self.ZTblAdherents.Locate('cin_adherent',trim(cin),[loCaseInsensitive]); //, loPartialKey]
++   result := self.ZTblAdherents.Locate('cin_adherent',trim(cin),[loCaseInsensitive, loPartialKey]);
+ end;
+ 
+ function TDM.AjouterAdherent(cin, nom, gsm, douar: string): Boolean;
+@@ -152,11 +99,10 @@ begin
+    if self.RechercheAdherent(trim(cin)) then exit;
+    self.ZTblAdherents.Insert;
+    self.ZTblAdherents.FieldByName('cin_adherent').AsString:= trim(cin);
+-   self.ZTblAdherents.FieldByName('nom').AsString := trim(nom);
+-   if (trim(gsm) = '') then
+-        self.ZTblAdherents.FieldByName('gsm').Clear else
+-        self.ZTblAdherents.FieldByName('gsm').value := trim(gsm);
+-   self.ZTblAdherents.FieldByName('douar').AsString := trim(douar);
++   self.ZTblAdherents.FieldByName('nom').AsString:= trim(nom);
++   if not (trim(gsm)='') then
++        self.ZTblAdherents.FieldByName('gsm').Value:=trim(gsm);
++   self.ZTblAdherents.FieldByName('douar').AsString:=trim(douar);
+    self.ZTblAdherents.Post;
+    Result := True;
+ end;
+@@ -165,15 +111,19 @@ function TDM.ModifierAdherent(cin, nom, gsm, douar: string): Boolean;
+ begin
+    result := False;
+    if self.ZTblAdherents.State in [dsEdit,dsInsert] then exit;
++   ShowMessage('1');
+    if NOT self.RechercheAdherent(trim(cin)) then exit;
++    ShowMessage('2');
+    self.ZTblAdherents.Edit;
+-   self.ZTblAdherents.FieldByName('cin_adherent').AsString := trim(cin);
+-   self.ZTblAdherents.FieldByName('nom').AsString := trim(nom);
+-    if (trim(gsm)='') then
+-        self.ZTblAdherents.FieldByName('gsm').Clear
+-        else self.ZTblAdherents.FieldByName('gsm').Value := trim(gsm);
+-   self.ZTblAdherents.FieldByName('douar').AsString := trim(douar);
++    ShowMessage('3');
++
++   self.ZTblAdherents.FieldByName('cin_adherent').AsString:= trim(cin);
++   self.ZTblAdherents.FieldByName('nom').AsString:= trim(nom);
++   self.ZTblAdherents.FieldByName('gsm').AsString:=trim(gsm);
++   self.ZTblAdherents.FieldByName('douar').AsString:=trim(douar);
++    ShowMessage('4');
+    self.ZTblAdherents.Post;
++    ShowMessage('5');
+    Result := True;
+ end;
+ 
+@@ -206,13 +156,10 @@ begin
+    if self.ZtblResponsables.State in [dsInsert,dsEdit] then exit;
+    if self.RechercheResponsable(trim(cin)) then exit;
+    self.ZtblResponsables.Insert;
+-   self.ZtblResponsables.FieldByName('cin_responsable').AsString:= trim(cin);
++   self.ZtblResponsables.FieldByName('cin_responsablet').AsString:= trim(cin);
+    self.ZtblResponsables.FieldByName('nom').AsString:= trim(nom);
+-    if (trim(gsm) = '') then
+-        self.ZtblResponsables.FieldByName('gsm').Clear
+-        else
+-          self.ZtblResponsables.FieldByName('gsm').Value := trim(gsm);
+-   self.ZtblResponsables.FieldByName('douar').AsString := trim(adresse);
++   self.ZtblResponsables.FieldByName('gsm').AsString:=trim(gsm);
++   self.ZtblResponsables.FieldByName('douar').AsString:=trim(adresse);
+    self.ZtblResponsables.Post;
+    Result := True;
+ end;
+@@ -221,15 +168,12 @@ function TDM.ModifierResponsable(cin, nom, gsm, adresse: string): Boolean;
+ begin
+   result := False;
+    if self.ZtblResponsables.State in [dsEdit,dsInsert] then exit;
+-   if NOT self.RechercheResponsable(trim(cin)) then exit;
++   if self.RechercheResponsable(trim(cin)) then exit;
+    self.ZtblResponsables.Edit;
+    self.ZtblResponsables.FieldByName('cin_responsable').AsString:= trim(cin);
+    self.ZtblResponsables.FieldByName('nom').AsString:= trim(nom);
+-    if (trim(gsm)= '') then
+-        self.ZtblResponsables.FieldByName('gsm').Clear
+-        else
+-          self.ZtblResponsables.FieldByName('gsm').Value := trim(gsm);
+-   self.ZtblResponsables.FieldByName('douar').AsString := trim(adresse);
++   self.ZtblResponsables.FieldByName('gsm').AsString:=trim(gsm);
++   self.ZtblResponsables.FieldByName('douar').AsString:=trim(adresse);
+    self.ZtblResponsables.Post;
+    Result := True;
+ end;
+@@ -239,61 +183,21 @@ begin
+ 
+ end;
+ 
+-function TDM.RechercheCotisation(cle: string;datecotisation : tdate): Boolean;
+-//var
+-  //datecotisationToString : String;
+-begin
+-   //datecotisationToString := DateToStr(datecotisation);
+-   result :=
+-   self.ZtblCollectes.Locate('cin_adherent;datecotisation',
+-                            VarArrayOf([trim(cle),datecotisation]),
+-                            [loCaseInsensitive]);
+-
+-end;
+-
+-procedure TDM.FiltrerCotisation(cle: string);
++function TDM.RechercheCotisation(cle: string): Boolean;
+ begin
+-  if trim(cle) = '' then
+- begin
+-     ZtblCollectes.Filtered := False;
+-     exit;
+-  end;
+-  ZtblCollectes.Filtered:=False;
+-  ZtblCollectes.Filter := 'cin_adherent like '+QuotedStr(cle);
+-  ZtblCollectes.Filtered := True;
+ 
+ end;
+ 
+ function TDM.AjouterCotisation(dateCotisation: tdate; quantite: double;
+-  cinAdherent, cinResponsable: string; periode: string): Boolean;
++  cinAdherent, cinResponsable: string; periode: Boolean): Boolean;
+ begin
+-   result := False;
+-   if self.ZtblCollectes.State in [dsInsert,dsEdit] then exit;
+-   //if self.RechercheCotisation(trim(cin)) then exit;
+-   self.ZtblCollectes.Insert;
+-   self.ZtblCollectes.FieldByName('cin_responsable').AsString:= trim(cinResponsable);
+-   self.ZtblCollectes.FieldByName('cin_adherent').AsString:= trim(cinAdherent);
+-   self.ZtblCollectes.FieldByName('datecotisation').AsDateTime:= dateCotisation;
+-   self.ZtblCollectes.FieldByName('quantite').AsFloat := quantite;
+-   self.ZtblCollectes.FieldByName('periode').AsString := periode;
+-   self.ZtblCollectes.Post;
+-   Result := True;
++
+ end;
+ 
+ function TDM.ModifierCotisation(dateCotisation: tdate; quantite: double;
+-  cinAdherent, cinResponsable: string; periode: string): Boolean;
++  cinAdherent, cinResponsable: string; periode: Boolean): Boolean;
+ begin
+-  result := False;
+-   if self.ZtblCollectes.State in [dsInsert,dsEdit] then exit;
+-   //if self.RechercheCotisation(trim(cin)) then exit;
+-   self.ZtblCollectes.Edit;
+-   self.ZtblCollectes.FieldByName('cin_responsable').AsString:= trim(cinResponsable);
+-   self.ZtblCollectes.FieldByName('cin_adherent').AsString := trim(cinAdherent);
+-   self.ZtblCollectes.FieldByName('datecotisation').AsDateTime := dateCotisation;
+-   self.ZtblCollectes.FieldByName('quantite').AsFloat := quantite;
+-   self.ZtblCollectes.FieldByName('periode').AsString := periode;
+-   self.ZtblCollectes.Post;
+-   Result := True;
++
+ end;
+ 
+ function TDM.SuprimerCotisation(idCotisation: string): Boolean;
+@@ -301,20 +205,10 @@ begin
+ 
+ end;
+ 
+-function TDM.ValeurDuChampAdherent(avalue: string): string;
++function TDM.ValeurDuChamp(avalue: string): string;
+ begin
+   result := ZTblAdherents.FieldByName(avalue).AsString;
+ end;
+ 
+-function TDM.ValeurDuChampReponsable(avalue: string): string;
+-begin
+-   result := ZtblResponsables.FieldByName(avalue).AsString;
+-end;
+-
+-function TDM.ValeurDuChampCotisation(avalue: string): string;
+-begin
+-   result := ZtblCollectes.FieldByName(avalue).AsString;
+-end;
+-
+ end.
+ 
+diff --git a/Application/Principale/uprincipale.lfm b/Application/Principale/uprincipale.lfm
+index d870023..40ae90d 100644
+--- a/Application/Principale/uprincipale.lfm
++++ b/Application/Principale/uprincipale.lfm
+@@ -1,7 +1,7 @@
+ object FrmPrincipale: TFrmPrincipale
+-  Left = 155
++  Left = 156
+   Height = 414
+-  Top = 151
++  Top = 152
+   Width = 919
+   Caption = 'FrmPrincipale'
+   ClientHeight = 414
+@@ -24,7 +24,6 @@ object FrmPrincipale: TFrmPrincipale
+     Top = 112
+     Width = 208
+     Caption = 'BtnGestionResponsables'
+-    OnClick = BtnGestionResponsablesClick
+     TabOrder = 1
+   end
+   object BtnGestionCotisations: TButton
+@@ -33,7 +32,6 @@ object FrmPrincipale: TFrmPrincipale
+     Top = 184
+     Width = 208
+     Caption = 'BtnGestionCotisations'
+-    OnClick = BtnGestionCotisationsClick
+     TabOrder = 2
+   end
+ end
+diff --git a/Application/Principale/uprincipale.pas b/Application/Principale/uprincipale.pas
+index 6d8a34f..9f0e58e 100644
+--- a/Application/Principale/uprincipale.pas
++++ b/Application/Principale/uprincipale.pas
+@@ -16,8 +16,6 @@ type
+     BtnGestionResponsables: TButton;
+     BtnGestionCotisations: TButton;
+     procedure BtnGestionAdherentsClick(Sender: TObject);
+-    procedure BtnGestionCotisationsClick(Sender: TObject);
+-    procedure BtnGestionResponsablesClick(Sender: TObject);
+ 
+   private
+ 
+@@ -29,31 +27,15 @@ var
+   FrmPrincipale: TFrmPrincipale;
+ 
+ implementation
+-    uses UDM,uAdherents,uResponsable,uCotisation1;
++    uses UDM,uAdherents;
+ {$R *.lfm}
+ 
+     { TFrmPrincipale }
+ 
+-procedure TFrmPrincipale.BtnGestionAdherentsClick(Sender: TObject);
+-begin
+-  DM.ActiverTable('Adherents');
+-  FrmAdherent.ShowModal;
+-  DM.DisactiverTable('Adherents');
+-end;
+-
+-procedure TFrmPrincipale.BtnGestionCotisationsClick(Sender: TObject);
+-begin
+-  DM.ActiverTable('Cotisations');
+-  FrmCotisation.ShowModal;
+-  DM.DisactiverTable('Cotisations');
+-end;
+-
+-procedure TFrmPrincipale.BtnGestionResponsablesClick(Sender: TObject);
+-begin
+-  DM.ActiverTable('Responsables');
+-  FrmResponsable.ShowModal;
+-  DM.DisactiverTable('Responsables');
+-end;
++    procedure TFrmPrincipale.BtnGestionAdherentsClick(Sender: TObject);
++    begin
++       FrmAdherent.ShowModal;
++    end;
+ 
+ { TFrmPrincipale }
+ 
+diff --git a/Application/Responsables/uresponsable.lfm b/Application/Responsables/uresponsable.lfm
+deleted file mode 100644
+index c378a78..0000000
+--- a/Application/Responsables/uresponsable.lfm
++++ /dev/null
+@@ -1,262 +0,0 @@
+-object FrmResponsable: TFrmResponsable
+-  Left = 315
+-  Height = 462
+-  Top = 158
+-  Width = 920
+-  BorderStyle = bsDialog
+-  Caption = 'FrmResponsable'
+-  ClientHeight = 462
+-  ClientWidth = 920
+-  DesignTimePPI = 81
+-  OnShow = FormShow
+-  Position = poDesktopCenter
+-  LCLVersion = '3.0.0.1'
+-  object Panel2: TPanel
+-    Left = 0
+-    Height = 42
+-    Top = 420
+-    Width = 920
+-    Align = alBottom
+-    BevelOuter = bvNone
+-    Caption = 'Panel2'
+-    ClientHeight = 42
+-    ClientWidth = 920
+-    TabOrder = 0
+-    object BtnFremer: TButton
+-      Left = 796
+-      Height = 42
+-      Top = 0
+-      Width = 124
+-      Align = alRight
+-      Caption = 'BtnFremer'
+-      OnClick = BtnFremerClick
+-      TabOrder = 0
+-    end
+-  end
+-  object PageControl1: TPageControl
+-    Left = 0
+-    Height = 420
+-    Top = 0
+-    Width = 920
+-    ActivePage = TabSheet1
+-    Align = alClient
+-    TabIndex = 0
+-    TabOrder = 1
+-    object TabSheet1: TTabSheet
+-      Caption = 'TabSheet1'
+-      ClientHeight = 390
+-      ClientWidth = 910
+-      object Panel1: TPanel
+-        Left = 0
+-        Height = 42
+-        Top = 0
+-        Width = 910
+-        Align = alTop
+-        BevelOuter = bvNone
+-        Caption = 'Panel1'
+-        ClientHeight = 42
+-        ClientWidth = 910
+-        TabOrder = 0
+-        object BtbRechercher: TButton
+-          Left = 470
+-          Height = 42
+-          Top = 0
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtbRechercher'
+-          OnClick = BtbRechercherClick
+-          TabOrder = 0
+-        end
+-        object BtnAjouter: TButton
+-          Left = 580
+-          Height = 42
+-          Top = 0
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtnAjouter'
+-          OnClick = BtnAjouterClick
+-          TabOrder = 1
+-        end
+-        object BtnModifier: TButton
+-          Left = 690
+-          Height = 42
+-          Top = 0
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtnModifier'
+-          OnClick = BtnModifierClick
+-          TabOrder = 2
+-        end
+-        object BtnSupprimer: TButton
+-          Left = 800
+-          Height = 42
+-          Top = 0
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtnSupprimer'
+-          TabOrder = 3
+-        end
+-        object EdtRechercher: TEdit
+-          Left = 0
+-          Height = 42
+-          Top = 0
+-          Width = 470
+-          Align = alClient
+-          Alignment = taCenter
+-          TabOrder = 4
+-        end
+-      end
+-      object DBGrid1: TDBGrid
+-        Left = 0
+-        Height = 306
+-        Top = 42
+-        Width = 910
+-        Align = alClient
+-        AutoFillColumns = True
+-        Color = clWindow
+-        Columns = <>
+-        DataSource = DM.DSResponsables
+-        Flat = True
+-        ReadOnly = True
+-        Scrollbars = ssNone
+-        TabOrder = 1
+-      end
+-      object Panel5: TPanel
+-        Left = 0
+-        Height = 42
+-        Top = 348
+-        Width = 910
+-        Align = alBottom
+-        Caption = 'Panel5'
+-        ClientHeight = 42
+-        ClientWidth = 910
+-        TabOrder = 2
+-        object BtnImprimerAllResponsables: TButton
+-          Left = 1
+-          Height = 40
+-          Top = 1
+-          Width = 232
+-          Align = alLeft
+-          Caption = 'BtnImprimerAllResponsables'
+-          TabOrder = 0
+-        end
+-        object BtnImprimerResponsable: TButton
+-          Left = 233
+-          Height = 40
+-          Top = 1
+-          Width = 232
+-          Align = alLeft
+-          Caption = 'BtnImprimerResponsable'
+-          TabOrder = 1
+-        end
+-      end
+-    end
+-    object TabSheet2: TTabSheet
+-      Caption = 'TabSheet2'
+-      ClientHeight = 390
+-      ClientWidth = 910
+-      object Panel3: TPanel
+-        Left = 0
+-        Height = 42
+-        Top = 348
+-        Width = 910
+-        Align = alBottom
+-        Caption = 'Panel3'
+-        ClientHeight = 42
+-        ClientWidth = 910
+-        TabOrder = 0
+-        object BtnAnnuler: TButton
+-          Left = 799
+-          Height = 40
+-          Top = 1
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtnAnnuler'
+-          OnClick = BtnAnnulerClick
+-          TabOrder = 0
+-        end
+-        object BtnValider: TButton
+-          Left = 689
+-          Height = 40
+-          Top = 1
+-          Width = 110
+-          Align = alRight
+-          Caption = 'BtnValider'
+-          OnClick = BtnValiderClick
+-          TabOrder = 1
+-        end
+-      end
+-      object EdtCin: TEdit
+-        Left = 152
+-        Height = 33
+-        Top = 40
+-        Width = 140
+-        CharCase = ecUppercase
+-        MaxLength = 15
+-        TabOrder = 1
+-      end
+-      object EdtNom: TEdit
+-        Left = 152
+-        Height = 33
+-        Top = 80
+-        Width = 254
+-        CharCase = ecUppercase
+-        MaxLength = 45
+-        TabOrder = 2
+-      end
+-      object EdtGSM: TEdit
+-        Left = 152
+-        Height = 33
+-        Top = 128
+-        Width = 140
+-        MaxLength = 10
+-        NumbersOnly = True
+-        TabOrder = 3
+-      end
+-      object Label1: TLabel
+-        Left = 56
+-        Height = 16
+-        Top = 48
+-        Width = 33
+-        Caption = 'CIN : '
+-      end
+-      object Label2: TLabel
+-        Left = 56
+-        Height = 16
+-        Top = 88
+-        Width = 97
+-        Caption = 'Nom Complet : '
+-      end
+-      object Label3: TLabel
+-        Left = 56
+-        Height = 16
+-        Top = 136
+-        Width = 56
+-        Caption = 'N° GSM : '
+-      end
+-      object Label4: TLabel
+-        Left = 56
+-        Height = 16
+-        Top = 184
+-        Width = 50
+-        Caption = 'Adresse'
+-      end
+-      object EdtAdresse: TMemo
+-        Left = 152
+-        Height = 120
+-        Top = 176
+-        Width = 383
+-        MaxLength = 255
+-        TabOrder = 4
+-      end
+-      object Button1: TButton
+-        Left = 597
+-        Height = 21
+-        Top = 31
+-        Width = 63
+-        Caption = 'Button1'
+-        TabOrder = 5
+-      end
+-    end
+-  end
+-end
+diff --git a/Application/Responsables/uresponsable.pas b/Application/Responsables/uresponsable.pas
+deleted file mode 100644
+index 36af43b..0000000
+--- a/Application/Responsables/uresponsable.pas
++++ /dev/null
+@@ -1,170 +0,0 @@
+-unit uResponsable;
+-
+-{$mode ObjFPC}{$H+}
+-
+-interface
+-
+-uses
+-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
+-  DBGrids, StdCtrls;
+-
+-type
+-
+-  { TFrmResponsable }
+-
+-  TFrmResponsable = class(TForm)
+-    BtbRechercher: TButton;
+-     BtnAjouter: TButton;
+-    BtnAnnuler: TButton;
+-    BtnFremer: TButton;
+-    BtnImprimerResponsable: TButton;
+-    BtnImprimerAllResponsables: TButton;
+-    BtnModifier: TButton;
+-    BtnSupprimer: TButton;
+-    BtnValider: TButton;
+-    Button1: TButton;
+-    DBGrid1: TDBGrid;
+-    EdtAdresse: TMemo;
+-    EdtCin: TEdit;
+-    EdtGSM: TEdit;
+-    EdtNom: TEdit;
+-    EdtRechercher: TEdit;
+-    Label1: TLabel;
+-    Label2: TLabel;
+-    Label3: TLabel;
+-    Label4: TLabel;
+-    PageControl1: TPageControl;
+-    Panel1: TPanel;
+-    Panel2: TPanel;
+-    Panel3: TPanel;
+-    Panel5: TPanel;
+-    TabSheet1: TTabSheet;
+-    TabSheet2: TTabSheet;
+-    procedure BtbRechercherClick(Sender: TObject);
+-    procedure BtnAjouterClick(Sender: TObject);
+-    procedure BtnAnnulerClick(Sender: TObject);
+-    procedure BtnFremerClick(Sender: TObject);
+-    procedure BtnModifierClick(Sender: TObject);
+-    procedure BtnValiderClick(Sender: TObject);
+-    procedure FormShow(Sender: TObject);
+-  private
+-    CDUD : string;
+-    Function ViderResponsable():Boolean;
+-    Procedure ChargerResponsable();
+-    Function ValiderResponsable():Boolean;
+-  public
+-
+-  end;
+-
+-var
+-  FrmResponsable: TFrmResponsable;
+-
+-implementation
+- uses UDM;
+-{$R *.lfm}
+-
+- { TFrmResponsable }
+-
+- procedure TFrmResponsable.BtbRechercherClick(Sender: TObject);
+- begin
+-   if NOT DM.RechercheResponsable(trim(EdtRechercher.text)) then
+-   ShowMessage('Responsable Non Enregistré');
+- end;
+-
+-procedure TFrmResponsable.BtnAjouterClick(Sender: TObject);
+-begin
+-   Self.CDUD:='INSERT';
+-  self.ViderResponsable();
+-  PageControl1.ActivePage:=TabSheet2;
+-  EdtCin.SetFocus;
+-end;
+-
+-procedure TFrmResponsable.BtnAnnulerClick(Sender: TObject);
+-begin
+-  PageControl1.ActivePage:=TabSheet1;
+-end;
+-
+-procedure TFrmResponsable.BtnFremerClick(Sender: TObject);
+-begin
+-  DM.DisactiverTable('Responsables');
+-  close;
+-end;
+-
+-procedure TFrmResponsable.BtnModifierClick(Sender: TObject);
+-begin
+-  Self.CDUD:='UPDATE';
+-   PageControl1.ActivePage:=TabSheet2;
+-   self.ChargerResponsable();
+-end;
+-
+-procedure TFrmResponsable.BtnValiderClick(Sender: TObject);
+-begin
+-  if  Not  self.Validerresponsable() then
+-       begin
+-         exit;
+-       end;
+-  case self.CDUD of
+-    'INSERT': if NOT DM.AjouterResponsable(EdtCin.Text,EdtNom.Text,EdtGSM.Text,EdtAdresse.text)
+-   then
+-    begin
+-      ShowMessage('Operration Non Effectuée  CIN Responsable Existe Deja!');
+-      exit;
+-    end;
+-    'UPDATE':if NOT DM.ModifierResponsable(EdtCin.Text,EdtNom.Text,EdtGSM.Text,EdtAdresse.text)
+-   then
+-    begin
+-      ShowMessage('Operration Non Effectuée  CIN responsable Existe Deja! !');
+-      exit;
+-    end;
+-  end;
+-
+-  PageControl1.ActivePage:=TabSheet1;
+-end;
+-
+-procedure TFrmResponsable.FormShow(Sender: TObject);
+-begin
+-  PageControl1.ActivePage := TabSheet1;
+-end;
+-
+-function TFrmResponsable.ViderResponsable(): Boolean;
+-begin
+-  EdtCin.Clear;
+-  EdtNom.Clear;
+-  EdtGSM.Clear;
+-  EdtAdresse.Clear;
+-end;
+-
+-procedure TFrmResponsable.ChargerResponsable();
+-begin
+-    EdtCin.Text:=DM.ValeurDuChampReponsable('cin_responsable');
+-     EdtNom.Text:=DM.ValeurDuChampReponsable('nom');
+-     EdtGSM.Text:=DM.ValeurDuChampReponsable('gsm');
+-     EdtAdresse.Text:=DM.ValeurDuChampReponsable('douar');
+-end;
+-
+-function TFrmResponsable.ValiderResponsable(): Boolean;
+-begin
+-  Result := False;
+-    if Length(trim(EdtCin.text)) < 1 then
+-     begin
+-       ShowMessage('Code Adherent Non Conforme !');
+-       EdtCin.SetFocus;
+-       exit;
+-     end;
+-    if Length(trim(EdtNom.text)) < 3 then
+-     begin
+-       ShowMessage('Nom Adherent Non Conforme !');
+-       EdtNom.SetFocus;
+-       exit;
+-     end;
+-    if ((Length(trim(EdtGSM.text)) > 0)  AND  (Length(trim(EdtGSM.text)) <10 ))then
+-     begin
+-       ShowMessage('Numero GSM Non Conforme !');
+-       EdtGSM.SetFocus;
+-       exit;
+-     end;
+-    Result := True;
+-end;
+-
+-end.
+-
+diff --git a/Application/coperatice2024 b/Application/coperatice2024
+new file mode 100755
+index 0000000..1395d8d
+Binary files /dev/null and b/Application/coperatice2024 differ
+diff --git a/Application/coperatice2024.lpi b/Application/coperatice2024.lpi
+index cd572a8..0679cc8 100644
+--- a/Application/coperatice2024.lpi
++++ b/Application/coperatice2024.lpi
+@@ -24,12 +24,6 @@
+       <FormatVersion Value="2"/>
+     </RunParams>
+     <RequiredPackages>
+-      <Item>
+-        <PackageName Value="DateTimeCtrlsDsgn"/>
+-      </Item>
+-      <Item>
+-        <PackageName Value="DateTimeCtrls"/>
+-      </Item>
+       <Item>
+         <PackageName Value="FCL"/>
+       </Item>
+@@ -70,32 +64,16 @@
+         <ResourceBaseClass Value="Form"/>
+         <UnitName Value="uAdherents"/>
+       </Unit>
+-      <Unit>
+-        <Filename Value="Responsables/uresponsable.pas"/>
+-        <IsPartOfProject Value="True"/>
+-        <ComponentName Value="FrmResponsable"/>
+-        <HasResources Value="True"/>
+-        <ResourceBaseClass Value="Form"/>
+-        <UnitName Value="uResponsable"/>
+-      </Unit>
+-      <Unit>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <IsPartOfProject Value="True"/>
+-        <ComponentName Value="FrmCotisation"/>
+-        <HasResources Value="True"/>
+-        <ResourceBaseClass Value="Form"/>
+-        <UnitName Value="uCotisation1"/>
+-      </Unit>
+     </Units>
+   </ProjectOptions>
+   <CompilerOptions>
+     <Version Value="11"/>
+     <Target>
+-      <Filename Value="coperatice2024.exe"/>
++      <Filename Value="coperatice2024"/>
+     </Target>
+     <SearchPaths>
+       <IncludeFiles Value="$(ProjOutDir)"/>
+-      <OtherUnitFiles Value="Principale;DM;Adherents;Responsables;Cotisations"/>
++      <OtherUnitFiles Value="Principale;DM;Adherents"/>
+       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+     </SearchPaths>
+     <Linking>
+diff --git a/Application/coperatice2024.lpr b/Application/coperatice2024.lpr
+index ffb9a8e..6b01b09 100644
+--- a/Application/coperatice2024.lpr
++++ b/Application/coperatice2024.lpr
+@@ -10,8 +10,7 @@ uses
+   athreads,
+   {$ENDIF}
+   Interfaces, // this includes the LCL widgetset
+-  Forms, datetimectrls, zcomponent, uPrincipale, uDM, uAdherents, uResponsable,
+-  uCotisation1
++  Forms, zcomponent, uPrincipale, uDM, uAdherents
+   { you can add units after this };
+ 
+ {$R *.res}
+@@ -23,8 +22,6 @@ begin
+   Application.CreateForm(TFrmPrincipale, FrmPrincipale);
+   Application.CreateForm(TDM, DM);
+   Application.CreateForm(TFrmAdherent, FrmAdherent);
+-  Application.CreateForm(TFrmResponsable, FrmResponsable);
+-  Application.CreateForm(TFrmCotisation, FrmCotisation);
+   Application.Run;
+ end.
+ 
+diff --git a/Application/coperatice2024.lps b/Application/coperatice2024.lps
+index 85e17e1..e5af978 100644
+--- a/Application/coperatice2024.lps
++++ b/Application/coperatice2024.lps
+@@ -12,7 +12,7 @@
+         <WindowIndex Value="-1"/>
+         <TopLine Value="-1"/>
+         <CursorPos X="-1" Y="-1"/>
+-        <UsageCount Value="41"/>
++        <UsageCount Value="22"/>
+       </Unit>
+       <Unit>
+         <Filename Value="Principale/uprincipale.pas"/>
+@@ -21,10 +21,9 @@
+         <HasResources Value="True"/>
+         <ResourceBaseClass Value="Form"/>
+         <UnitName Value="uPrincipale"/>
+-        <TopLine Value="28"/>
+-        <CursorPos X="15" Y="35"/>
+-        <ComponentState Value="2"/>
+-        <UsageCount Value="41"/>
++        <TopLine Value="22"/>
++        <CursorPos X="46" Y="37"/>
++        <UsageCount Value="22"/>
+         <Loaded Value="True"/>
+         <LoadedDesigner Value="True"/>
+       </Unit>
+@@ -35,10 +34,11 @@
+         <HasResources Value="True"/>
+         <ResourceBaseClass Value="DataModule"/>
+         <UnitName Value="uDM"/>
+-        <EditorIndex Value="4"/>
+-        <TopLine Value="111"/>
+-        <CursorPos X="64" Y="124"/>
+-        <UsageCount Value="41"/>
++        <IsVisibleTab Value="True"/>
++        <EditorIndex Value="1"/>
++        <TopLine Value="25"/>
++        <CursorPos X="17" Y="33"/>
++        <UsageCount Value="22"/>
+         <Loaded Value="True"/>
+         <LoadedDesigner Value="True"/>
+       </Unit>
+@@ -50,158 +50,133 @@
+         <ResourceBaseClass Value="Form"/>
+         <UnitName Value="uAdherents"/>
+         <EditorIndex Value="2"/>
+-        <TopLine Value="81"/>
+-        <CursorPos X="9" Y="93"/>
+-        <UsageCount Value="41"/>
+-        <Loaded Value="True"/>
+-        <LoadedDesigner Value="True"/>
+-      </Unit>
+-      <Unit>
+-        <Filename Value="Responsables/uresponsable.pas"/>
+-        <IsPartOfProject Value="True"/>
+-        <ComponentName Value="FrmResponsable"/>
+-        <HasResources Value="True"/>
+-        <ResourceBaseClass Value="Form"/>
+-        <UnitName Value="uResponsable"/>
+-        <EditorIndex Value="3"/>
+-        <TopLine Value="93"/>
+-        <CursorPos X="3" Y="134"/>
+-        <UsageCount Value="38"/>
+-        <Loaded Value="True"/>
+-        <LoadedDesigner Value="True"/>
+-      </Unit>
+-      <Unit>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <IsPartOfProject Value="True"/>
+-        <ComponentName Value="FrmCotisation"/>
+-        <HasResources Value="True"/>
+-        <ResourceBaseClass Value="Form"/>
+-        <UnitName Value="uCotisation1"/>
+-        <IsVisibleTab Value="True"/>
+-        <EditorIndex Value="1"/>
+-        <TopLine Value="125"/>
+-        <CursorPos X="73" Y="119"/>
+-        <UsageCount Value="33"/>
++        <TopLine Value="33"/>
++        <CursorPos X="49" Y="46"/>
++        <UsageCount Value="22"/>
+         <Loaded Value="True"/>
+         <LoadedDesigner Value="True"/>
+       </Unit>
+     </Units>
+-    <JumpHistory HistoryIndex="28">
++    <JumpHistory HistoryIndex="29">
+       <Position>
+         <Filename Value="DM/udm.pas"/>
+-        <Caret Line="46" Column="27" TopLine="39"/>
++        <Caret Line="29" Column="19" TopLine="17"/>
+       </Position>
+       <Position>
+-        <Filename Value="DM/udm.pas"/>
+-        <Caret Line="104" Column="23" TopLine="103"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="99" Column="53" TopLine="90"/>
+       </Position>
+       <Position>
+-        <Filename Value="DM/udm.pas"/>
+-        <Caret Line="46" Column="30" TopLine="35"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="39" Column="20" TopLine="37"/>
+       </Position>
+       <Position>
+-        <Filename Value="DM/udm.pas"/>
+-        <Caret Line="106" Column="14" TopLine="103"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="69" Column="6" TopLine="68"/>
+       </Position>
+       <Position>
+-        <Filename Value="DM/udm.pas"/>
+-        <Caret Line="46" Column="39" TopLine="44"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="48" Column="22" TopLine="28"/>
+       </Position>
+       <Position>
+-        <Filename Value="DM/udm.pas"/>
+-        <Caret Line="104" Column="32" TopLine="94"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="147" Column="6" TopLine="139"/>
+       </Position>
+       <Position>
+-        <Filename Value="DM/udm.pas"/>
+-        <Caret Line="46" Column="44" TopLine="35"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="39" Column="20" TopLine="37"/>
+       </Position>
+       <Position>
+-        <Filename Value="Principale/uprincipale.pas"/>
+-        <Caret Line="34" Column="31" TopLine="24"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="73" Column="9" TopLine="68"/>
+       </Position>
+       <Position>
+-        <Filename Value="DM/udm.pas"/>
+-        <Caret Line="47" Column="20" TopLine="32"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="92" Column="7" TopLine="90"/>
+       </Position>
+       <Position>
+-        <Filename Value="Principale/uprincipale.pas"/>
+-        <Caret Line="52" Column="45" TopLine="16"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="47" Column="18" TopLine="31"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="85" Column="17" TopLine="85"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="136" Column="39" TopLine="120"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="110" Column="9" TopLine="106"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="177" Column="18" TopLine="154"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="111" Column="9" TopLine="107"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="28" Column="25" TopLine="18"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="112" Column="9" TopLine="108"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="92" Column="4" TopLine="73"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="111" Column="9" TopLine="107"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="69" Column="27" TopLine="58"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="112" Column="9" TopLine="108"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="29" Column="21" TopLine="20"/>
++      </Position>
++      <Position>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="88" Column="8" TopLine="78"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="111" Column="9" TopLine="107"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="87" Column="28" TopLine="87"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="112" Column="9" TopLine="108"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="99" Column="28" TopLine="99"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="113" Column="9" TopLine="109"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="34" Column="23" TopLine="20"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="112" Column="9" TopLine="108"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="84" Column="31" TopLine="80"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="111" Column="9" TopLine="107"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="34" Column="16" TopLine="25"/>
+       </Position>
+       <Position>
+-        <Filename Value="Adherents/uadherents.pas"/>
+-        <Caret Line="94" Column="11" TopLine="52"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="83" Column="3" TopLine="80"/>
+       </Position>
+       <Position>
+-        <Filename Value="Adherents/uadherents.pas"/>
+-        <Caret Line="96" Column="11" TopLine="73"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="34" Column="16" TopLine="25"/>
+       </Position>
+       <Position>
+-        <Filename Value="Responsables/uresponsable.pas"/>
+-        <Caret Line="124" Column="51" TopLine="113"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="83" Column="13" TopLine="73"/>
+       </Position>
+       <Position>
+-        <Filename Value="Adherents/uadherents.pas"/>
+-        <Caret Line="97" Column="11" TopLine="74"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="34" Column="27" TopLine="25"/>
+       </Position>
+       <Position>
+         <Filename Value="Adherents/uadherents.pas"/>
+-        <Caret Line="104" Column="11" TopLine="81"/>
++        <Caret Line="34" Column="34" TopLine="29"/>
+       </Position>
+       <Position>
+-        <Filename Value="Cotisations/ucotisation1.pas"/>
+-        <Caret Line="111" Column="9" TopLine="107"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="35" Column="34" TopLine="30"/>
+       </Position>
+       <Position>
+-        <Filename Value="Responsables/uresponsable.pas"/>
+-        <Caret Line="127" Column="51" TopLine="116"/>
++        <Filename Value="Adherents/uadherents.pas"/>
++        <Caret Line="116" TopLine="115"/>
+       </Position>
+       <Position>
+-        <Filename Value="Responsables/uresponsable.pas"/>
+-        <Caret Line="134" Column="51" TopLine="123"/>
++        <Filename Value="DM/udm.pas"/>
++        <Caret Line="81" TopLine="80"/>
+       </Position>
+     </JumpHistory>
+     <RunParams>
+diff --git a/README.md b/README.md
+deleted file mode 100644
+index 367c123..0000000
+--- a/README.md
++++ /dev/null
+@@ -1 +0,0 @@
+-# Cooperative2

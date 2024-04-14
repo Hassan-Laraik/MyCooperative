@@ -1,0 +1,239 @@
+object DM: TDM
+  OldCreateOrder = False
+  Height = 253
+  HorizontalOffset = 777
+  VerticalOffset = 152
+  Width = 406
+  PPI = 81
+  object ZCNX: TZConnection
+    ControlsCodePage = cCP_UTF8
+    AutoEncodeStrings = True
+    Properties.Strings = (
+      'AutoEncodeStrings=True'
+      'controls_cp=CP_UTF8'
+    )
+    Connected = True
+    HostName = 'localhost'
+    Port = 0
+    Database = 'gestion_litiaire'
+    User = 'root'
+    Password = '12345678'
+    Protocol = 'mysql-5'
+    Left = 183
+    Top = 17
+  end
+  object DsAdherents: TDataSource
+    DataSet = ZTblAdherents
+    Left = 51
+    Top = 154
+  end
+  object DSResponsables: TDataSource
+    DataSet = ZtblResponsables
+    Left = 168
+    Top = 152
+  end
+  object DSCollectes: TDataSource
+    DataSet = ZtblCollectes
+    Left = 270
+    Top = 150
+  end
+  object ZtblCollectes: TZQuery
+    Connection = ZCNX
+    SQL.Strings = (
+      'select *  from collectes'
+    )
+    Params = <>
+    Left = 263
+    Top = 81
+    object ZtblCollectesidcotisations: TLongintField
+      FieldKind = fkData
+      FieldName = 'idcotisations'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object ZtblCollectesdatecotisation: TDateField
+      FieldKind = fkData
+      FieldName = 'datecotisation'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object ZtblCollectesquantite: TFloatField
+      FieldKind = fkData
+      FieldName = 'quantite'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+      Precision = 8
+    end
+    object ZtblCollectesperiode: TStringField
+      FieldKind = fkData
+      FieldName = 'periode'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 6
+    end
+    object ZtblCollectescin_adherent: TStringField
+      FieldKind = fkData
+      FieldName = 'cin_adherent'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+      Size = 10
+    end
+    object ZtblCollectescin_responsable: TStringField
+      FieldKind = fkData
+      FieldName = 'cin_responsable'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+      Size = 10
+    end
+    object ZtblCollectestarif: TFloatField
+      FieldKind = fkData
+      FieldName = 'tarif'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 12
+    end
+  end
+  object ZTblAdherents: TZQuery
+    Connection = ZCNX
+    OnPostError = ZTblAdherentsPostError
+    SQL.Strings = (
+      'select * from adherents'
+    )
+    Params = <>
+    Left = 46
+    Top = 81
+    object ZTblAdherentscin_adherent: TStringField
+      FieldKind = fkData
+      FieldName = 'cin_adherent'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+      Size = 10
+    end
+    object ZTblAdherentsnom: TStringField
+      FieldKind = fkData
+      FieldName = 'nom'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+      Size = 45
+    end
+    object ZTblAdherentsgsm: TStringField
+      FieldKind = fkData
+      FieldName = 'gsm'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      OnGetText = ZTblAdherentsgsmGetText
+      Size = 10
+    end
+    object ZTblAdherentsdouar: TStringField
+      FieldKind = fkData
+      FieldName = 'douar'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+  end
+  object ZtblResponsables: TZQuery
+    Connection = ZCNX
+    SQL.Strings = (
+      'select  * from responsables'
+    )
+    Params = <>
+    Left = 162
+    Top = 81
+    object ZtblResponsablescin_responsable: TStringField
+      FieldKind = fkData
+      FieldName = 'cin_responsable'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+      Size = 10
+    end
+    object ZtblResponsablesnom: TStringField
+      FieldKind = fkData
+      FieldName = 'nom'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+      Size = 45
+    end
+    object ZtblResponsablesgsm: TStringField
+      FieldKind = fkData
+      FieldName = 'gsm'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      OnGetText = ZtblResponsablesgsmGetText
+      Size = 10
+    end
+    object ZtblResponsablesdouar: TStringField
+      FieldKind = fkData
+      FieldName = 'douar'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 255
+    end
+  end
+  object ZqryAgreggats: TZQuery
+    Connection = ZCNX
+    Params = <>
+    Left = 356
+    Top = 35
+  end
+  object ZqryTarifApplique: TZQuery
+    Connection = ZCNX
+    SQL.Strings = (
+      'select *  from tarifs '
+      'where active = 1'
+    )
+    Params = <>
+    Left = 347
+    Top = 101
+  end
+  object DSTarifApplique: TDataSource
+    DataSet = ZqryTarifApplique
+    Left = 353
+    Top = 169
+  end
+end
